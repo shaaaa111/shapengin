@@ -1,0 +1,14 @@
+body {
+  background-image: url('./img/office_resized_bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#timer, #score {
+  font-weight: bold;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid white;
+  border-radius: 6px;
+}
