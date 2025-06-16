@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ペンギンを探せ</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      text-align: center;
+      /* background: #ffffff; */
+    }
+    #titleScreen, #endScreen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: white;
+    }
+    #gameScreen {
+      display: none;
+      padding: 10px;
+      max-width: 100vw;
+      box-sizing: border-box;
+    }
+    .info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 20px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .cell {
+      font-size: 24px;
+      padding: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      
+    }
+    .cell:active {
+      background: #e0e0e0;
+    }
+    
+      100% { transform: translateX(2px); }
+    }
+    button {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="titleScreen">
+    <h1>ペンギンを探せ</h1>
+    <p>タップしてスタート</p>
+  </div>
+
+  <div id="gameScreen">
+    <div class="info">
+      <div id="timer">残り30秒</div>
+      <div id="score">スコア0点</div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div id="endScreen" style="display:none">
+    <h2 id="finalScore">スコア: 0点</h2>
+    <p>タップしてリスタート</p>
+  </div>
+
+  <script>
+    const titleScreen = document.getElementById('titleScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const endScreen = document.getElementById('endScreen');
+    const timerEl = document.getElementById('timer');
+    const scoreEl = document.getElementById('score');
+    const finalScoreEl = document.getElementById('finalScore');
+    const grid = document.getElementById('grid');
+
+    let score = 0;
+    let timeLeft = 30;
+    let timer;
+
+    titleScreen.addEventListener('click', startGame);
+    endScreen.addEventListener('click', startGame);
+
+    function startGame() {
+      titleScreen.style.display = 'none';
+      endScreen.style.display = 'none';
+      gameScreen.style.display = 'block';
+      score = 0;
+      timeLeft = 30;
+      updateInfo();
+      generateGrid();
+      timer = setInterval(() => {
+        timeLeft--;
+        updateInfo();
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+    }
+
+    function endGame() {
+      clearInterval(timer);
+      gameScreen.style.display = 'none';
+      endScreen.style.display = 'flex';
+      finalScoreEl.textContent = `スコア: ${score}点`;
+    }
+
+    function updateInfo() {
+      timerEl.textContent = `残り${timeLeft}秒`;
+      scoreEl.textContent = `スコア${score}点`;
+    }
+
+    function generateGrid() {
+      grid.innerHTML = '';
+      const totalCells = 100;
+      const penguinIndex = Math.floor(Math.random() * totalCells);
+
+      for (let i = 0; i < totalCells; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        const img = document.createElement('img');
+        img.src = i === penguinIndex ? './img/pengin_icon.png' : './img/panda_icon.png';
+        img.alt = i === penguinIndex ? '🐧' : '🐼';
+        img.style.width = '32px';
+        img.style.height = '32px';
+        cell.appendChild(img);
+        cell.addEventListener('click', () => {
+          if (i === penguinIndex) {
+            score++;
+            updateInfo();
+            generateGrid();
+          }
+        });
+        grid.appendChild(cell);
+      }
+    }
+  </script>
+</body>
+</html>
